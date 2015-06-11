@@ -1,0 +1,42 @@
+* {
+    box-sizing: border-box;
+}
+html {
+    height: 100%;
+    background-color: #EFEFEF;
+}
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+#container {
+    position: relative;
+    height: 50%;
+    border-bottom: solid 1px #C1C1C1;
+}
+#container p {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 40px;
+    width: 100%;
+    color: #555;
+    text-align: center;
+    font-family: "microsoft yahei";
+    font-size: 30px;
+    transition: all .3s;
+}
+#main {
+    padding: 40px;
+    height: 50%;
+    text-align: center;
+    border-top: solid 1px #FFF;
+}
+#main a {
+    margin: 0 20px;
+    color: #1075BF;
+    text-decoration: none;
+    font-family: "microsoft yahei";
+}
