@@ -208,7 +208,7 @@
         turn: function(url, data, callback) {
             var eventData = { url: url, fnb: core.fnb, data: data };
             
-            pjax.trigger("start", eventData);
+            pjax.trigger("xhrBegin", eventData);
 
             // 如果是由前进后退触发，并且开启了缓存，则试着从缓存中获取数据
             if (core.fnb && config.cache) {
@@ -216,7 +216,7 @@
                 
                 if (cache != null) {
                     core.replace(cache);
-                    pjax.trigger("success", eventData);
+                    pjax.trigger("xhrSuccess", eventData);
 
                     return;
                 }
@@ -262,14 +262,15 @@
                         
                         // 回调
                         if (callback) callback(data);
-                        pjax.trigger("success", eventData);
+                        pjax.trigger("xhrSuccess", eventData);
                     }
                     else {
-                        pjax.trigger("error", util.extend(eventData, {errCode: xhr.status}));
+                        pjax.trigger("xhrError", util.extend(eventData, {errCode: xhr.status}));
                         util.log("coffce-pjax: 请求失败，错误码：" + xhr.status);
                     }
                     
                     core.fnb = true;
+                    pjax.trigger("xhrEnd");
                 }
             };
             xhr.send();

@@ -4,7 +4,7 @@
 Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有a标签替换为AJAX请求。支持缓存及在各个页面之间传递参数。正常浏览器上使用HTML5 History API，低版本浏览器使用Hash，兼容IE8~IE11，Chrome，Firefox等。
 
 ## 用法
-简单配置：
+####简单配置：
 ``` javascript
 // 引入pjax，也可以使用window.CoffcePJAX
 var pjax = require("coffce-pjax");
@@ -16,7 +16,7 @@ pjax.init({
     hash: true
 });
 ```
-高级配置:
+####高级配置:
 ``` javascript
 var pjax = require("coffce-pjax");
 pjax.init({
@@ -52,6 +52,24 @@ pjax.init({
 ```
 
 ## 接口
+####对外接口：
+接口      | 描述
+----------|----------
+pjax.init(config) | 初始化，参数见上面[用法]
+pjax.turn(url, data, callback) | 跳转到[url]，[data]表示要带到新页面的参数，在callback或者xhrSuccess事件里接收，跳转完成触发[callback]回调
+pjax.on(type, listener) | 监听事件，见下表
+pjax.off(type) | 移除监听
+pjax.trigger(type, args) | 手动触发事件
+pjax.destroy | 注销pjax插件
+
+#### 事件类型：
+类型 | 参数 | 描述
+-----|------|------
+xhrBegin | { url, fnb, data} | 
+xhrSuccess | { url, fnb, data} | 
+xhrEnd | { url, fnb, data} | 
+xhrError | { url, fnb, data} | 
+
 
 ## 注意
 作者很懒，没有经过详细的测试，使用需自己小心。
