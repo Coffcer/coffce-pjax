@@ -13,6 +13,20 @@
     
     // 配置
     var config = {
+        // 选择器，支持querySelector选择器
+        selector: "a",
+        // 要替换内容的容器，可为选择器字符串或DOM对象
+        container: "body",
+        // 是否在前进后退时开启本地缓存功能
+        cache : true,
+        // 是否对低版本浏览器启用hash方案
+        hash: false,
+        // 是否允许跳转到当前相同URL，相当于刷新
+        same: true,
+        // 调试模式，console.log调试信息
+        debug: false,
+        // （未完成）服务器是否支持，为true时表示服务器将根据HTTP头coffce-pjax返回片段HTML，为false时表示服务器将整个页面html，由插件内部获取需要片段
+        // serverSupport: true,
         // 各个执行阶段的过滤函数，返回false则停止pjax执行
         filter: {
             // params: element
@@ -28,24 +42,8 @@
         custom: {
             // params: html, container
             // 自定义更换页面函数，可以在此实现动画效果等
-            append: null,
-            // （未完成）自定义发送请求函数
-            // ajax: null
-        },
-        // 选择器，支持querySelector选择器
-        selector: "a",
-        // 要替换内容的容器，可为选择器字符串或DOM对象
-        container: "body",
-        // 是否在前进后退时开启本地缓存功能
-        cache : true,
-        // 是否对低版本浏览器启用hash方案
-        hash: false,
-        // 是否允许跳转到当前相同URL，相当于刷新
-        same: true,
-        // 调试模式，console.log调试信息
-        debug: false
-        // （未完成）服务器是否支持，为true时表示服务器将根据HTTP头coffce-pjax返回片段HTML，为false时表示服务器将整个页面html，由插件内部获取需要片段
-        // serverSupport: true,
+            append: null
+        }
     };
     
     // 使用模式 枚举
