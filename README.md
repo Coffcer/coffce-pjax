@@ -4,7 +4,7 @@ Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有�
 
 ## 用法
 ####安装：
-``` npm install coffce-pjax ```
+    npm install coffce-pjax
 
 ####简单配置：
 ``` javascript
@@ -72,10 +72,6 @@ begin   | { url, fnb, data} | 请求开始时执行，url为新页面地址，fn
 success | { url, fnb, data} | 请求成功时执行
 end     | { url, fnb, data} | 请求结束时执行，无论成功与否
 error   | { url, fnb, data, errCode} | 请求失败时执行，errCode为xhr.status
-
-
-## 注意
-作者很懒，没有经过详细的测试，使用需自己小心。
 
 ## License
 MIT
