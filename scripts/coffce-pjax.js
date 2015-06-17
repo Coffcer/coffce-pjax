@@ -93,13 +93,23 @@
                 document.documentElement.mozMatchesSelector || 
                 document.documentElement.msMatchesSelector ||
                 // 兼容IE8及以下浏览器
-                function(selector) {
-                    return Array.prototype.indexOf.call(document.querySelectorAll(selector), this) !== -1;
+                function(selector, element) {
+                    // 这是一个好方法，可惜IE8连indexOf都不支持
+                    // return Array.prototype.indexOf.call(document.querySelectorAll(selector), this) !== -1;
+                    
+                    var elements = document.querySelectorAll(selector),
+                        length = elements.length;
+                    
+                    while (length--) {
+                        if (elements[length] === this) return true;
+                    }
+                    
+                    return false;
                 };
             
             // 重写函数自身，使用闭包keep住match函数，不用每次都判断兼容
             util.matchSelector = function(element, selector) {
-                return match.call(element, selector);
+                return match.call(element, selector, element);
             };
             
             return util.matchSelector(element, selector);
@@ -145,7 +155,7 @@
             core.turn(location.href.replace("#/", ""), null, null);
         },
         click: function(e) {
-            var element = e.target;
+            var element = e.target || e.srcElement;
             
             // 过滤不匹配选择器的元素
             if (!util.matchSelector(element, config.selector)) return;
