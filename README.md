@@ -1,13 +1,14 @@
 # Coffce-PJAX
-
-## 介绍
-Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有a标签替换为AJAX请求。
+Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有的跳转替换为AJAX请求。
 支持缓存及在各个页面之间传递参数。正常浏览器上使用HTML5 History API，低版本浏览器使用Hash，兼容IE8~IE11，Chrome，Firefox等。
 
 ## 用法
+####安装：
+``` npm install coffce-pjax ```
+
 ####简单配置：
 ``` javascript
-// 引入pjax，也可以使用window.CoffcePJAX
+// 也可以用window.CoffcePJAX
 var pjax = require("coffce-pjax");
 
 pjax.init({
@@ -17,9 +18,10 @@ pjax.init({
     hash: true
 });
 ```
-####高级配置:
+####完整配置:
 ``` javascript
 var pjax = require("coffce-pjax");
+
 pjax.init({
     // 选择器，支持querySelector选择器
     selector: "a",
@@ -49,7 +51,10 @@ pjax.init({
 });
 ```
 
-## 接口
+####服务端配合
+coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML即可。
+
+## 文档
 ####对外接口：
 接口 | 描述
 -----|-----
@@ -58,7 +63,7 @@ pjax.turn(url, data, callback) | 使用pjax方式跳转到指定url。data表示
 pjax.on(type, listener) | 监听事件，见下面[事件类型]
 pjax.off(type) | 移除监听
 pjax.trigger(type, args) | 手动触发事件
-pjax.destroy | 注销插件
+pjax.destroy() | 注销插件
 
 #### 事件类型：
 类型 | 参数 | 描述
