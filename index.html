@@ -13,18 +13,18 @@
         <a href="/demo/third.html">Third.html</a>
     </div>
    
-    <script src="/scripts/coffce-pjax2.js"></script>
+    <script src="/scripts/coffce-pjax.js"></script>
     <script>
         var container = document.getElementById("container");
         
         // 配置PJAX
-        window.CoffcePjax.init({
+        CoffcePJAX.init({
             container: container,
             hash: true,
             filter: {
-                content: function(arg) {
+                content: function(title, html) {
                     // 线上环境根据COFFCE-PJAX判断是否PJAX请求，从而返回片段HTML，所以并不需要这一步
-                    if (arg.html.indexOf('<html lang="en">') > -1) {
+                    if (html.indexOf('<html lang="en">') > -1) {
                         container.innerHTML = "";
                         return false;
                     }

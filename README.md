@@ -53,22 +53,22 @@ pjax.init({
 
 ## 接口
 ####对外接口：
-接口      | 描述
-----------|----------
+接口 | 描述
+-----|-----
 pjax.init(config) | 初始化，参数见上面[用法]
 pjax.turn(url, data, callback) | 跳转到[url]，[data]表示要带到新页面的参数，在callback或者xhrSuccess事件里接收，跳转完成触发[callback]回调
-pjax.on(type, listener) | 监听事件，见下表
+pjax.on(type, listener) | 监听事件，见下面[事件类型]
 pjax.off(type) | 移除监听
 pjax.trigger(type, args) | 手动触发事件
-pjax.destroy | 注销pjax插件
+pjax.destroy | 注销插件
 
 #### 事件类型：
 类型 | 参数 | 描述
 -----|------|------
-xhrBegin | { url, fnb, data} | 
-xhrSuccess | { url, fnb, data} | 
-xhrEnd | { url, fnb, data} | 
-xhrError | { url, fnb, data} | 
+xhrBegin   | { url, fnb, data} | url为新页面地址，fnb表示是否由浏览器前进后退触发，data是传到新页面的参数
+xhrSuccess | 同上 | 
+xhrEnd     | 同上 | 
+xhrError   | { url, fnb, data, errCode} | 
 
 
 ## 注意
