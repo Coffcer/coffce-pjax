@@ -1,6 +1,15 @@
 # Coffce-PJAX
-Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有的跳转替换为AJAX请求。
-支持缓存及在各个页面之间传递参数。正常浏览器上使用HTML5 History API，低版本浏览器使用Hash，兼容IE8~IE11，Chrome，Firefox等。
+Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有的跳转替换为AJAX请求，把网站改造成SPA。
+
+####用处
+1. 可以在页面切换间增加过渡效果、载入条等。
+2. 所有的标签都可以用来跳转，不仅仅是a标签。
+3. 可以在各个页面间传递数据，不依赖URL。
+4. 减少了请求体积，避免了公用JS反复加载和执行，加快页面响应速度。
+
+####兼容
+正常浏览器上使用HTML5 History API，低版本浏览器使用Hash。
+兼容IE8~IE11，Chrome，Firefox等。
 
 ## 用法
 ####安装：
@@ -52,10 +61,11 @@ pjax.init({
 ```
 
 ####服务端配合
-coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML即可。
+一般来说，我们切换页面时Header和Footer是不用动的，只变动Content，所以服务端在接收到PJAX请求后，并不需要返回完整的HTML，只返回Content即可。
+coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML。
 
 ## 文档
-####对外接口：
+####方法：
 接口 | 描述
 -----|-----
 pjax.init(config) | 初始化，参数见上面[用法]
@@ -72,6 +82,9 @@ begin   | { url, fnb, data} | 请求开始时执行，url为新页面地址，fn
 success | { url, fnb, data} | 请求成功时执行
 end     | { url, fnb, data} | 请求结束时执行，无论成功与否
 error   | { url, fnb, data, errCode} | 请求失败时执行，errCode为xhr.status
+
+## 注意：
+作者很懒，没有认真测试过，使用需自己小心。
 
 ## License
 MIT

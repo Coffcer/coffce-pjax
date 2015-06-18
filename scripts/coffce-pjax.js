@@ -84,6 +84,12 @@
         getPath: function(url) {
             return url.replace(location.protocol + "//" + location.host, "");
         },
+        // 获取完整的href
+        getFullHref: function(href) {
+            var a = document.createElement("a");
+            a.href = href;
+            return a.href;
+        },
         // 判断dom是否匹配选择器
         matchSelector: function(element, selector) {
             var match = 
@@ -107,7 +113,7 @@
             
             // 重写函数自身，使用闭包keep住match函数，不用每次都判断兼容
             util.matchSelector = function(element, selector) {
-                return match.call(element, selector, element);
+                return match.call(element, selector);
             };
             
             return util.matchSelector(element, selector);
@@ -156,13 +162,14 @@
             var element = e.target || e.srcElement;
             
             // 过滤不匹配选择器的元素
-            if (!util.matchSelector(element, config.selector)) return;
+            if (element.tagName !== config.selector && !util.matchSelector(element, config.selector)) return;
             
             // 过滤函数
             if (config.filter.selector && !config.filter.selector(element)) return;
             
             // 优先使用data-coffce-href
-            var url = element.getAttribute("data-coffce-href") || element.href;
+            var url = element.getAttribute("data-coffce-pjax-href");
+            url = url ? util.getFullHref(url) : element.href;
             
             // 过滤空值
             if (url === "") return;

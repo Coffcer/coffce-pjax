@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>COFFCE-PJAX-DEMO</title>
-    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="../styles/style.css">
 </head>
 <body>
     <div id="container"></div>
     <div id="main">
-        <a href="/demo/first.html">First.html</a>
-        <a href="/demo/second.html">Second.html</a>
-        <a href="/demo/third.html">Third.html</a>
+        <a href="first.html">First.html</a>
+        <a href="second.html">Second.html</a>
+        <a href="third.html" data-coffce-pjax="third data">Third.html</a>
     </div>
    
-    <script src="/scripts/coffce-pjax.js"></script>
+    <script src="../scripts/coffce-pjax.js"></script>
     <script>
         var container = document.getElementById("container");
         
@@ -33,6 +33,22 @@
                 }
             }
         });
+        
+        CoffcePJAX.on("success", function(e) {
+            console.log("success");
+            console.log(e);
+        });
+        
+        CoffcePJAX.on("error", function(e) {
+            console.log("error");
+            console.log(e);
+        });
+        
+        CoffcePJAX.on("begin", function(e) {
+            console.log("begin");
+            console.log(e);
+        });
+        
     </script>
 </body>
 </html>
