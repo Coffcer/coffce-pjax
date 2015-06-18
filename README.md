@@ -13,7 +13,7 @@ Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有�
 正常浏览器上使用HTML5 History API，低版本浏览器使用Hash。
 兼容IE8~IE11，Chrome，Firefox等。
 
-## 用法
+## 如何使用
 ####安装：
     npm install coffce-pjax
 
