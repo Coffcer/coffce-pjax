@@ -1,27 +1,39 @@
-# Coffce-PJAX
-Coffce-PJAX是一个简单的PJAX库，通过简单的配置，既可将所有的跳转替换为AJAX请求，把网站改造成SPA。
+Coffce-PJAX
+===
+Coffce-PJAX可以将页面所有的跳转替换为AJAX请求，把网站改造成单页面应用。
 
-####用处
+
+###有何用处：
+* 可以在页面切换时增加过渡效果和Loading动画。
+* 所有的标签都可以用来跳转，不仅仅是a标签。
+* 可以在各个页面间传递数据，不依赖URL。
+* 可以选择性的保留状态，如音乐网站，切换页面时候不会停止播放歌曲。
+* 避免了公共JS的反复执行，如无需在各个页面打开时都判断是否登录等等。
+* 减少了请求体积，加快页面响应速度。
+* 不影响SEO。
+
+###兼容性：
+* Chrome, Firefox, Safari, Android Browser, IE8+等。
+* 在IE8和IE9上使用URL Hash，即地址栏的#号。
+* 在更低版本的浏览器和搜索引擎蜘蛛上，保持默认跳转，不受影响。
+
+如何使用
 ---
-1. 可以在页面切换间增加过渡效果、载入条等。
-2. 所有的标签都可以用来跳转，不仅仅是a标签。
-3. 可以在各个页面间传递数据，不依赖URL。
-4. 减少了请求体积，避免了公用JS反复加载和执行，加快页面响应速度。
-
-####兼容
----
-正常浏览器上使用HTML5 History API，低版本浏览器使用Hash。
-兼容IE8~IE11，Chrome，Firefox等。
-
-## 如何使用
 ####安装：
     npm install coffce-pjax
 
+#### 引入
+``` javascript
+// 使用全局变量
+var pjax = window.CoffcePJAX
+```
+
+``` javascript
+// 使用commonJS或AMD
+var pjax = require("coffce-pjax");
+```
 ####简单配置：
 ``` javascript
-// 也可以用window.CoffcePJAX
-var pjax = require("coffce-pjax");
-
 pjax.init({
     // 替换新页面内容的容器
     container: "body",
@@ -31,8 +43,6 @@ pjax.init({
 ```
 ####完整配置:
 ``` javascript
-var pjax = require("coffce-pjax");
-
 pjax.init({
     // 选择器，支持querySelector选择器
     selector: "a",
@@ -63,10 +73,11 @@ pjax.init({
 ```
 
 ####服务端配合
-一般来说，我们切换页面时Header和Footer是不用动的，只变动Content，所以服务端在接收到PJAX请求后，并不需要返回完整的HTML，只返回Content即可。
+一般来说，我们切换页面时Header和Footer是不用动的，只变动Content，所以服务端在接收到PJAX请求后，并不需要返回完整的HTML，只返回Content即可。<br>
 coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML。
 
-## 文档
+文档
+------
 ####方法：
 接口 | 描述
 -----|-----
@@ -85,8 +96,10 @@ success | { url, fnb, data} | 请求成功时执行
 end     | { url, fnb, data} | 请求结束时执行，无论成功与否
 error   | { url, fnb, data, errCode} | 请求失败时执行，errCode为xhr.status
 
-## 注意：
+注意：
+------
 作者很懒，没有认真测试过，使用需自己小心。
 
-## License
+License
+-----
 MIT
