@@ -24,8 +24,7 @@ body {
     width: 100%;
     color: #555;
     text-align: center;
-    font-family: "microsoft yahei";
-    font-size: 30px;
+    font: 30px "microsoft yahei";
     transition: all .3s;
 }
 #main {

@@ -112,6 +112,8 @@ pjax.turn(url, data, callback);
  * @param {Function} listener 回调
  */
 pjax.on(type, listener);
+// 指定url，只在跳转到该url时触发
+pjax.on(type, url, listener);
 ```
 
 ```javascript
@@ -120,6 +122,8 @@ pjax.on(type, listener);
  * @param {String} type 事件类型
  */
 pjax.off(type);
+// 解除指定url的事件
+pjax.off(type, url);
 ```
 
 ```javascript
@@ -129,6 +133,9 @@ pjax.off(type);
  * @param {Object} args 参数
  */
 pjax.trigger(type, args);
+// 触发指定url的事件
+pjax.trigger(type, url);
+pjax.trigger(type, url, args);
 ```
 
 事件类型
@@ -153,20 +160,19 @@ pjax.on("success", function(e) {});
 pjax.on("end", function(e) {});
 
 /**
- * success 在请求失败时触发，参数和上面一样↑，但多了一个errCode
+ * error 在请求失败时触发，参数和上面一样↑，但多了一个errCode
  * @param {Object} e.errCode 请求的xhr.status
  */
-pjax.on("success", function(e) {});
+pjax.on("error", function(e) {});
 ```
 其他
 ---
+* 标签上若有data-coffce-pjax，将作为data属性传递到新页面
 * 优先使用标签上的data-coffce-pjax-href，其次使用href：
 ```html
 // 将跳转到b.html
 <a href="a.html" data-coffce-pjax-href="b.html"></a>
 ```
-
-* 标签上若有data-coffce-pjax，将作为data属性传递到新页面
 
 注意：
 ------

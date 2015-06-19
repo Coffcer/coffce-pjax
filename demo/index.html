@@ -16,9 +16,10 @@
     <script src="../scripts/coffce-pjax.js"></script>
     <script>
         var container = document.getElementById("container");
+        var pjax = CoffcePJAX;
         
         // 配置PJAX
-        CoffcePJAX.init({
+        pjax.init({
             container: container,
             hash: true,
             filter: {
@@ -34,17 +35,17 @@
             }
         });
         
-        CoffcePJAX.on("success", function(e) {
+        pjax.on("success", function(e) {
             console.log("success");
             console.log(e);
         });
         
-        CoffcePJAX.on("error", function(e) {
+        pjax.on("error", function(e) {
             console.log("error");
             console.log(e);
         });
         
-        CoffcePJAX.on("begin", function(e) {
+        pjax.on("begin", function(e) {
             console.log("begin");
             console.log(e);
         });

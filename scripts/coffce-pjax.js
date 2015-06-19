@@ -99,6 +99,8 @@
                     // 这是一个好方法，可惜IE8连indexOf都不支持
                     // return Array.prototype.indexOf.call(document.querySelectorAll(selector), this) !== -1;
                     
+                    if (element.tagName === selector.toUpperCase()) return true;
+                    
                     var elements = document.querySelectorAll(selector),
                         length = elements.length;
                     
@@ -230,14 +232,14 @@
         turn: function(url, data, callback) {
             var eventData = { url: url, fnb: core.fnb, data: data };
             
-            pjax.trigger("begin", eventData);
+            pjax.trigger("begin", null, eventData);
 
             // 如果是由前进后退触发，并且开启了缓存，则试着从缓存中获取数据
             if (core.fnb && config.cache) {
                 var value = cache.get(url);
                 if (value != null) {
                     core.show(value.title, value.html);
-                    pjax.trigger("success", eventData);
+                    pjax.trigger("success", null, eventData);
                     return;
                 }
             }
@@ -277,17 +279,17 @@
                         }
                         
                         if (callback) callback(data);
-                        pjax.trigger("success", eventData);
+                        pjax.trigger("success", null, eventData);
                     }
                     else {
                         eventData.errCode = xhr.status;
-                        pjax.trigger("error", util.extend(eventData));
+                        pjax.trigger("error", null, util.extend(eventData));
                         
                         util.log("请求失败，错误码：" + xhr.status);
                     }
                     
                     core.fnb = true;
-                    pjax.trigger("end", eventData);
+                    pjax.trigger("end", null, eventData);
                 }
             };
             xhr.send();
@@ -298,7 +300,7 @@
         events: {},
         /**
          * 初始化
-         * @param {Object} options 配置，详情见上面↑
+         * @param {Object} options 配置
          */
         init: function(options) {
             if (suppost === SUPPORT.PASS) {
@@ -313,7 +315,7 @@
             }
             
             // 如果一打开就已经带有hash, 则立刻发请求
-            if (suppost === SUPPORT.HASH && location.hash.length > 1 && location.hash !== "#/") {
+            if (suppost === SUPPORT.HASH && location.hash.length > 2) {
                 // 先删了当前内容（一般为主页），防止用户误会
                 config.container.innerHTML = "";
                 
@@ -339,35 +341,72 @@
          * @param {Function} callback 请求成功时的回调
          */
         turn: function(url, data, callback) {
+            url = util.getFullHref(url);
             core.fnb = false;
             core.turn(url, data, callback);
         },
         /**
-         * 监听事件，事件类型见下面↓
+         * 监听事件
          * @param {String}   type     事件类型
+         * @param {String}   url      指定监听该事件的页面，null表示所有页面都监听
          * @param {Function} listener 回调
          */
-        on: function(type, listener) {
+        on: function(type, url, listener) {
+            if (arguments.length === 2) {
+                listener = url;
+                url = null;
+            }
+            else if (url) {
+                url = util.getFullHref(url);    
+            }
+            
             pjax.events[type] = pjax.events[type] || [];
-            pjax.events[type].push(listener);
+            pjax.events[type].push({
+                listener: listener,
+                url: url
+            });
         },
         /**
          * 解除监听
          * @param {String} type 事件类型
+         * @param {String} url 解绑该事件的页面，null表示所有页面都解绑
          */
-        off: function(type) {
+        off: function(type, url) {
+            var list = pjax.events[type];
+            if (url) {
+                url = util.getFullHref(url);
+                for (var i = 0; i < list.length;  i++) {
+                    if (list[i].url === url) {
+                        list.splice(i, 1);
+                        i--;
+                    }
+                }
+                return;
+            }
+            
             pjax.events[type] = null;
         },
         /**
          * 触发事件
          * @param {String} type 事件类型
+         * @param {String} url  只触发该页面的事件，null表示所有页面都触发
          * @param {Object} args 参数
          */
-        trigger: function(type, args) {
+        trigger: function(type, url, args) {
+            if (typeof url === "object") {
+                args = url;
+                url = null;
+            }
+            else if (url) {
+                url = util.getFullHref(url);
+            }
+            
             var list = pjax.events[type];
             if (list != null) {
                 for (var i = 0, length = list.length; i < length; i++) {
-                    list[i].call(pjax, args);
+                    if (list[i].url == url) {
+                        list[i].listener.call(pjax, args);
+                    }
                 }
             }
         }
