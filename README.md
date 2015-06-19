@@ -1,6 +1,6 @@
-Coffce-PJAX
+coffce-pjax
 ===
-Coffce-PJAX可以将页面所有的跳转替换为AJAX请求，把网站改造成单页面应用。
+coffce-pjax可以将页面所有的跳转替换为AJAX请求，把网站改造成单页面应用。
 
 
 ###有何用处：

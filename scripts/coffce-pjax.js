@@ -4,9 +4,7 @@
 /*!
  * Coffce-Pjax
  * 
- * Coffce-Pjax is a simple pjax libray. Make all the normal a[href] into ajax href, and change the url.
- * Support forward, back and cache, and you can pass the data between the page. 
- * It will use html5 history API for html5 browsers, and use url hash for IE8, IE9.
+ * coffce-pjax可以将页面所有的跳转替换为ajax请求，把网站改造成单页面应用。
  */
 
 (function(window, undefined) {
