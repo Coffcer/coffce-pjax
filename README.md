@@ -77,9 +77,8 @@ pjax.init({
 
 coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML。
 
-文档
-------
-###方法：
+接口
+---
 ```javascript
 /**
  * 初始化
@@ -132,13 +131,42 @@ pjax.off(type);
 pjax.trigger(type, args);
 ```
 
-#### 事件类型：
-类型 | 参数 | 描述
------|------|------
-begin   | { url, fnb, data} | 请求开始时执行，url为新页面地址，fnb表示是否由浏览器前进后退触发，data是传到新页面的参数
-success | { url, fnb, data} | 请求成功时执行
-end     | { url, fnb, data} | 请求结束时执行，无论成功与否
-error   | { url, fnb, data, errCode} | 请求失败时执行，errCode为xhr.status
+事件类型
+---
+```javascript
+/**
+ * begin 在请求开始时触发
+ * @param {String}  e.url  要跳转的url
+ * @param {Boolean} e.fnb  [forward and back] 是否由浏览器前进后退触发
+ * @param {Object}  e.data 要传递到新页面的数据
+ */
+pjax.on("begin", function(e) {});
+
+/**
+ * success 在请求成功时触发，参数和上面一样↑
+ */
+pjax.on("success", function(e) {});
+
+/**
+ * success 在请求结束时触发，无论成功与否。参数和上面一样↑
+ */
+pjax.on("end", function(e) {});
+
+/**
+ * success 在请求失败时触发，参数和上面一样↑，但多了一个errCode
+ * @param {Object} e.errCode 请求的xhr.status
+ */
+pjax.on("success", function(e) {});
+```
+其他
+---
+* 优先使用标签上的data-coffce-pjax-href，其次使用href：
+```html
+// 将跳转到b.html
+<a href="a.html" data-coffce-pjax-href="b.html"></a>
+```
+
+* 标签上若有data-coffce-pjax，将作为data属性传递到新页面
 
 注意：
 ------
