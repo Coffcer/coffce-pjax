@@ -73,20 +73,64 @@ pjax.init({
 ```
 
 ####服务端配合
-一般来说，我们切换页面时Header和Footer是不用动的，只变动Content，所以服务端在接收到PJAX请求后，并不需要返回完整的HTML，只返回Content即可。<br>
+一般来说，我们切换页面时Header和Footer是不用动的，只变动Content，所以服务端在接收到PJAX请求后，并不需要返回完整的HTML，只返回Content即可。
+
 coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML。
 
 文档
 ------
-####方法：
-接口 | 描述
------|-----
-pjax.init(config) | 初始化，参数见上面[用法]
-pjax.turn(url, data, callback) | 使用pjax方式跳转到指定url。data表示要带到新页面的参数，在callback或者success事件里接收
-pjax.on(type, listener) | 监听事件，见下面[事件类型]
-pjax.off(type) | 移除监听
-pjax.trigger(type, args) | 手动触发事件
-pjax.destroy() | 注销插件
+###方法：
+```javascript
+/**
+ * 初始化
+ * @param {Object} options 配置，详情见上面↑
+ */
+pjax.init(config);
+```
+
+```javascript
+/**
+ * 注销插件
+ * 一般来说你并不需要使用这个方法
+ */
+pjax.destroy();
+```
+
+```javascript
+/**
+ * 使用pjax跳转到指定页面
+ * @param {String}   url
+ * @param {Object}   data     要传到新页面的参数，可以为null或undefined
+ * @param {Function} callback 请求成功时的回调，可以为null或undefined
+ */
+pjax.turn(url, data, callback);
+```
+
+```javascript
+/**
+ * 监听事件，事件类型见下面↓
+ * @param {String}   type     事件类型
+ * @param {Function} listener 回调
+ */
+pjax.on(type, listener);
+```
+
+```javascript
+/**
+ * 解除监听
+ * @param {String} type 事件类型
+ */
+pjax.off(type);
+```
+
+```javascript
+/**
+ * 触发事件
+ * @param {String} type 事件类型
+ * @param {Object} args 参数
+ */
+pjax.trigger(type, args);
+```
 
 #### 事件类型：
 类型 | 参数 | 描述

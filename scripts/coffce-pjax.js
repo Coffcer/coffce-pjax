@@ -296,6 +296,10 @@
     
     var pjax = {
         events: {},
+        /**
+         * 初始化
+         * @param {Object} options 配置，详情见上面↑
+         */
         init: function(options) {
             if (suppost === SUPPORT.PASS) {
                 util.log("不支持该版本的浏览器");
@@ -319,22 +323,46 @@
             
             event.bindEvent();
         },
+        /**
+         * 注销插件
+         * 一般来说你并不需要使用这个方法
+         */
         destroy: function() {
             pjax.events = null;
             event.unbindEvent();
             util.clearCache();
         },
+        /**
+         * 使用pjax跳转到指定页面
+         * @param {String}   url
+         * @param {Object}   data     要传到新页面的参数，可以为null
+         * @param {Function} callback 请求成功时的回调
+         */
         turn: function(url, data, callback) {
             core.fnb = false;
             core.turn(url, data, callback);
         },
+        /**
+         * 监听事件，事件类型见下面↓
+         * @param {String}   type     事件类型
+         * @param {Function} listener 回调
+         */
         on: function(type, listener) {
             pjax.events[type] = pjax.events[type] || [];
             pjax.events[type].push(listener);
         },
+        /**
+         * 解除监听
+         * @param {String} type 事件类型
+         */
         off: function(type) {
             pjax.events[type] = null;
         },
+        /**
+         * 触发事件
+         * @param {String} type 事件类型
+         * @param {Object} args 参数
+         */
         trigger: function(type, args) {
             var list = pjax.events[type];
             if (list != null) {
