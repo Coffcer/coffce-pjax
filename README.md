@@ -77,6 +77,9 @@ pjax.init({
 
 coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML。
 
+####注意
+由于浏览器限制，PJAX需要在服务器环境下使用，即不要用file://xxx.html运行
+
 接口
 ---
 ```javascript
