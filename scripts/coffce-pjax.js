@@ -372,6 +372,7 @@
          * @param {Function} listener 回调
          */
         on: function(type, url, listener) {
+            // 只有两个参数，跳过中间的url
             if (listener === undefined) {
                 listener = url;
                 url = null;
@@ -392,41 +393,32 @@
          * @param {String} url 解绑该事件的页面，null表示所有页面都解绑
          */
         off: function(type, url) {
-            var list = pjax.events[type];
             if (url) {
+                var list = pjax.events[type];
                 url = util.getFullHref(url);
+                
                 for (var i = 0; i < list.length;  i++) {
                     if (list[i].url === url) {
                         list.splice(i, 1);
                         i--;
                     }
                 }
-                return;
+                
+                if (list.length) return;
             }
             
-            pjax.events[type] = null;
+            delete pjax.events[type];
         },
         /**
          * 触发事件
          * @param {String} type 事件类型
-         * @param {String} url  只触发该页面的事件，null表示所有页面都触发
          * @param {Object} args 参数
          */
-        trigger: function(type, url, args) {
-            if (typeof url === "object") {
-                args = url;
-                url = null;
-            }
-            else if (url) {
-                url = util.getFullHref(url);
-            }
-            
+        trigger: function(type, args) {
             var list = pjax.events[type];
-            if (list != null) {
+            if (list) {
                 for (var i = 0, length = list.length; i < length; i++) {
-                    if (list[i].url === url) {
-                        list[i].listener.call(pjax, args);
-                    }
+                    list[i].listener.call(pjax, args);
                 }
             }
         }

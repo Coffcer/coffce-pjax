@@ -1,7 +1,7 @@
 coffce-pjax
 ===
-coffce-pjax可以将页面所有的跳转替换为AJAX请求，把网站改造成单页面应用。
-
+coffce-pjax可以将页面所有的跳转替换为AJAX请求，把网站改造成单页面应用。<br>
+由于浏览器限制，PJAX需要在服务器环境下使用，即不要用file://xxx.html运行。
 
 ###有何用处：
 * 可以在页面切换间平滑过渡，增加Loading动画。
@@ -72,14 +72,6 @@ pjax.init({
 });
 ```
 
-####服务端配合
-一般来说，我们切换页面时Header和Footer是不用动的，只变动Content，所以服务端在接收到PJAX请求后，并不需要返回完整的HTML，只返回Content即可。
-
-coffce-pjax在发送请求时会带上请求头COFFCE-PJAX: true，服务端可以根据此判断当前请求是否是一个PJAX请求，如若是PJAX请求则返回部分HTML。
-
-####注意
-由于浏览器限制，PJAX需要在服务器环境下使用，即不要用file://xxx.html运行
-
 接口
 ---
 ```javascript
@@ -91,10 +83,7 @@ pjax.init(config);
 ```
 
 ```javascript
-/**
- * 注销插件
- * 一般来说你并不需要使用这个方法
- */
+ // 注销插件，一般来说你不需要使用这个方法
 pjax.destroy();
 ```
 
@@ -113,9 +102,9 @@ pjax.turn(url, data, callback);
  * 监听事件，事件类型见下面↓
  * @param {String}   type     事件类型
  * @param {Function} listener 回调
+ * @param {String}   url      只监听某个url，可以是相对和绝对路径
  */
 pjax.on(type, listener);
-// 指定url，只在跳转到该url时触发
 pjax.on(type, url, listener);
 ```
 
@@ -123,9 +112,9 @@ pjax.on(type, url, listener);
 /**
  * 解除监听
  * @param {String} type 事件类型
+ * @param {String} url  只监听某个url，可以是相对和绝对路径
  */
 pjax.off(type);
-// 解除指定url的事件
 pjax.off(type, url);
 ```
 
@@ -136,9 +125,6 @@ pjax.off(type, url);
  * @param {Object} args 参数
  */
 pjax.trigger(type, args);
-// 触发指定url的事件
-pjax.trigger(type, url);
-pjax.trigger(type, url, args);
 ```
 
 事件类型
@@ -152,14 +138,11 @@ pjax.trigger(type, url, args);
  */
 pjax.on("begin", function(e) {});
 
-/**
- * success 在请求成功时触发，参数和上面一样↑
- */
+// success 在请求成功时触发，参数和上面一样↑
 pjax.on("success", function(e) {});
 
-/**
- * success 在请求结束时触发，无论成功与否。参数和上面一样↑
- */
+
+// end 在请求结束时触发，无论成功与否，参数和上面一样↑
 pjax.on("end", function(e) {});
 
 /**
@@ -168,7 +151,8 @@ pjax.on("end", function(e) {});
  */
 pjax.on("error", function(e) {});
 ```
-其他
+
+特性
 ---
 * 标签上若有data-coffce-pjax，将作为data属性传递到新页面
 * 优先使用标签上的data-coffce-pjax-href，其次使用href：
@@ -176,6 +160,14 @@ pjax.on("error", function(e) {});
 // 将跳转到b.html
 <a href="a.html" data-coffce-pjax-href="b.html"></a>
 ```
+
+服务端配合
+---
+* 对于PJAX请求，服务端并不需要返回完整的HTML，只返回变动的Content部分即可。<br>
+对于普通请求(一般是由浏览器地址栏直接打开的请求)，则需要返回完整的HTML。<br>
+coffce-pjax在发送请求时，会带上请求头COFFCE-PJAX：true，你可以依此来判断当前请求是PJAX请求还是普通请求。
+
+* 由于没有返回完整的HTML，服务端应该将document.title放在请求头COFFCE-PJAX-TITLE里。
 
 注意：
 ------
