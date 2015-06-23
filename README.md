@@ -1,7 +1,7 @@
 coffce-pjax
 ===
 coffce-pjax可以将页面所有的跳转替换为AJAX请求，把网站改造成单页面应用。<br>
-由于浏览器限制，PJAX需要在服务器环境下使用，即不要用file://xxx.html运行。
+由于浏览器限制，pjax需要在服务器环境下使用，即不要用file://xxx.html运行。
 
 ###有何用处：
 * 可以在页面切换间平滑过渡，增加Loading动画。

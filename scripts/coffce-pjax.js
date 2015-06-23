@@ -3,8 +3,10 @@
 
 /*!
  * Coffce-Pjax
- * 将页面所有的跳转替换为ajax请求，把网站改造成单页面应用。
- * 兼容主流浏览器，在IE8和IE9上使用替代方案Hash，即地址栏的#号，你也可以选择不启用。
+ * 将页面所有的跳转替换为ajax请求，把网站改造成单页面应用
+ * 兼容Chrome, Firefox, Safari, Android Browser, IE8+等
+ * 在IE8和IE9上使用URL Hash，即地址栏的#号，你也可以选择不启用
+ * 在更低版本的浏览器和搜索引擎蜘蛛上，保持默认跳转，不受影响
  */
 
 (function(window, undefined) {
