@@ -1,13 +1,14 @@
-/*jshint eqnull: true, esnext: true, sub: true, browser: true, devel: true*/
+/*jshint eqnull: true, expr: true, sub: true, browser: true, devel: true*/
 /*global define, module */
 
 /*!
  * Coffce-Pjax
- * 
- * coffce-pjax可以将页面所有的跳转替换为ajax请求，把网站改造成单页面应用。
+ * 将页面所有的跳转替换为ajax请求，把网站改造成单页面应用。
+ * 兼容主流浏览器，在IE8和IE9上使用替代方案Hash，即地址栏的#号，你也可以选择不启用。
  */
 
 (function(window, undefined) {
+    "use strict";
     
     // 配置
     var config = {
@@ -23,18 +24,14 @@
         same: true,
         // 调试模式，console.log调试信息
         debug: false,
-        // （未完成）服务器是否支持，为true时表示服务器将根据HTTP头coffce-pjax返回片段HTML，为false时表示服务器将整个页面html，由插件内部获取需要片段
-        // serverSupport: true,
         // 各个执行阶段的过滤函数，返回false则停止pjax执行
         filter: {
             // params: element
             // 选择器过滤，如果querySelector无法满足需求，可以在此函数里二次过滤
             selector: null,
-            // params: { title, content }
+            // params: title, html
             // 接收到ajax请求返回的内容时触发
-            content: null,
-            // （未完成）缓存过滤
-            // cache: null
+            content: null
         },
         // 各个阶段的自定义函数，将替换默认实现
         custom: {
@@ -58,7 +55,11 @@
     var suppost = history.pushState ? SUPPORT.HTML5 : ("onhashchange" in window ? SUPPORT.HASH : SUPPORT.PASS);
     
     var util = {
-        // 合并两个对象，浅拷贝，使用需小心
+        /**
+         * 合并两个对象，浅拷贝
+         * @param {Object} obj1
+         * @param {Object} obj2
+         */
         extend: function(obj1, obj2) {
             if (!obj2) return; 
 
@@ -70,25 +71,36 @@
             
             return obj1;
         },
-        // 输出调试信息
-        // 仅在config.debug为true时输出
+        /**
+         * 输出调试信息，仅在config.debug为true时输出
+         * @param {String} text 
+         */
         log: function(text) {
             if (config.debug) {
                 console.log("coffce-pjax: " + text);
             }    
         },
-        // 返回url中的路径
-        // 如：www.google.com/abcd 返回 /abcd
+        /**
+         * 获取url中的路径， 如：www.google.com/abcd 返回 /abcd
+         * @param {String} url 
+         */
         getPath: function(url) {
             return url.replace(location.protocol + "//" + location.host, "");
         },
-        // 获取完整的href
+        /**
+         * 通过相对路径获取完整的url
+         * @param {String} href
+         */
         getFullHref: function(href) {
             var a = document.createElement("a");
             a.href = href;
             return a.href;
         },
-        // 判断dom是否匹配选择器
+        /**
+         * 判断dom是否匹配选择器
+         * @param {Object} element  
+         * @param {String} selector 
+         */
         matchSelector: function(element, selector) {
             var match = 
                 document.documentElement.webkitMatchesSelector || 
@@ -126,7 +138,7 @@
         },
         get: function(url) {
             var value = sessionStorage.getItem(cache.key(url));
-            return value != null ? JSON.parse(value) : null;
+            return value && JSON.parse(value);
         },
         set: function(url, value) {
             // storage有容量上限，超出限额会报错
@@ -138,9 +150,10 @@
             }
         },
         clear: function() {
-            for (var i = 0; i < sessionStorage.length; i++) {
+            var i = sessionStorage.length;
+            while (i--) {
                 var key = sessionStorage.key(i);
-                if (key.indexOf("coffce-pjax")) {
+                if (key.indexOf("coffce-pjax") > -1) {
                     sessionStorage.removeItem(key);
                 }
             }
@@ -162,26 +175,21 @@
             var element = e.target || e.srcElement;
             
             // 过滤不匹配选择器的元素
-            if (element.tagName !== config.selector && !util.matchSelector(element, config.selector)) return;
+            if (!util.matchSelector(element, config.selector)) return;
             
-            // 过滤函数
+            // 调用自定义过滤函数
             if (config.filter.selector && !config.filter.selector(element)) return;
             
-            // 优先使用data-coffce-href
+            // 优先使用data-coffce-pjax-href
             var url = element.getAttribute("data-coffce-pjax-href");
             url = url ? util.getFullHref(url) : element.href;
             
             // 过滤空值
-            if (url === "") return;
+            if (url === undefined || url === "") return;
 
             // 阻止默认跳转，
             // 在这上面的return，仍会执行默认跳转，下面的就不会了
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            else {
-                window.event.returnValue = false;
-            }
+            e.preventDefault ? e.preventDefault() : (window.event.returnValue = false);
 
             // 阻止相同链接
             if (!config.same && url === location.href) return;
@@ -217,7 +225,7 @@
     var core = {
         // Forward And Back，表示当前操作是否由前进和后退触发
         fnb: false,
-        // 替换页面标题和内容
+        // 显示新页面
         show: function(title, html) {
             document.title = title;
             
@@ -230,14 +238,18 @@
         },
         // 跳转到指定页面
         turn: function(url, data, callback) {
-            var eventData = { url: url, fnb: core.fnb, data: data };
+            var eventData = { 
+                url: url, 
+                fnb: core.fnb, 
+                data: data 
+            };
             
             pjax.trigger("begin", null, eventData);
 
             // 如果是由前进后退触发，并且开启了缓存，则试着从缓存中获取数据
             if (core.fnb && config.cache) {
                 var value = cache.get(url);
-                if (value != null) {
+                if (value !== null) {
                     core.show(value.title, value.html);
                     pjax.trigger("success", null, eventData);
                     return;
@@ -253,38 +265,42 @@
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
+                    // 姑且认为200-300之间都是成功的请求，304是缓存
                     if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
                         var title = xhr.getResponseHeader("COFFCE-PJAX-TITLE") || document.title,
                             html = xhr.responseText;
 
                         // 内容过去器
-                        if (config.filter.content && !config.filter.content(title, html)) return;
-
-                        // 显示新页面
-                        core.show(title, html);
-                        
-                        if (!core.fnb) {
-                            // 修改URL
-                            if (suppost === SUPPORT.HTML5) {
-                                history.pushState(null, null, url);
-                            }
-                            else {
-                                location.hash = util.getPath(url);
-                            }
-
-                            // 添加到缓存
-                            if (config.cache) {
-                                cache.set(url, { title: title, html: html });
-                            }
+                        if (config.filter.content && !config.filter.content(title, html)) {
+                            pjax.trigger("filterError", null, eventData);
+                            util.log("filter.content过滤不通过");
                         }
-                        
-                        if (callback) callback(data);
-                        pjax.trigger("success", null, eventData);
+                        else {
+                            // 显示新页面
+                            core.show(title, html);
+
+                            if (!core.fnb) {
+                                // 修改URL
+                                if (suppost === SUPPORT.HTML5) {
+                                    history.pushState(null, null, url);
+                                }
+                                else {
+                                    location.hash = util.getPath(url);
+                                }
+
+                                // 添加到缓存
+                                if (config.cache) {
+                                    cache.set(url, { title: title, html: html });
+                                }
+                            }
+
+                            callback && callback(data);
+                            pjax.trigger("success", null, eventData);
+                        }
                     }
                     else {
                         eventData.errCode = xhr.status;
-                        pjax.trigger("error", null, util.extend(eventData));
-                        
+                        pjax.trigger("error", null, eventData);
                         util.log("请求失败，错误码：" + xhr.status);
                     }
                     
@@ -309,14 +325,21 @@
             }
             
             util.extend(config, options);
-
+            
+            // 将config.container转换为dom
             if (typeof config.container === "string") {
+                var selectorName = config.container;
                 config.container = document.querySelector(config.container);
+                
+                if (config.container === null) {
+                    throw new Error("找不到Element：" + selectorName);
+                }
             }
             
             // 如果一打开就已经带有hash, 则立刻发请求
+            // 由于hash不会被传到服务器，此时页面多半是首页，如打开www.google.com/#/abcd，其实是打开了www.google.com
             if (suppost === SUPPORT.HASH && location.hash.length > 2) {
-                // 先删了当前内容（一般为主页），防止用户误会
+                // 先删了当前内容，防止用户误会
                 config.container.innerHTML = "";
                 
                 core.fnd = false;
@@ -325,10 +348,7 @@
             
             event.bindEvent();
         },
-        /**
-         * 注销插件
-         * 一般来说你并不需要使用这个方法
-         */
+        // 注销插件，一般来说你并不需要使用这个方法
         destroy: function() {
             pjax.events = null;
             event.unbindEvent();
@@ -352,7 +372,7 @@
          * @param {Function} listener 回调
          */
         on: function(type, url, listener) {
-            if (arguments.length === 2) {
+            if (listener === undefined) {
                 listener = url;
                 url = null;
             }
@@ -404,7 +424,7 @@
             var list = pjax.events[type];
             if (list != null) {
                 for (var i = 0, length = list.length; i < length; i++) {
-                    if (list[i].url == url) {
+                    if (list[i].url === url) {
                         list[i].listener.call(pjax, args);
                     }
                 }
