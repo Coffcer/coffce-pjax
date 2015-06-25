@@ -8,11 +8,11 @@
 <body>
     <div id="container"></div>
     <div id="main">
-        <a href="first.html">First.html</a>
-        <a href="second.html">Second.html</a>
-        <a href="third.html" data-coffce-pjax="third data">Third.html</a>
+        <a href="1.html">1.html</a>
+        <a href="2.html">2.html</a>
+        <a href="3.html" data-coffce-pjax="传递到新页面的数据">3.html</a>
     </div>
-   
+    <!--Scripts-->
     <script src="../scripts/coffce-pjax.js"></script>
     <script>
         var container = document.getElementById("container");
@@ -24,13 +24,34 @@
             hash: true,
             filter: {
                 content: function(title, html) {
-                    // 线上环境根据COFFCE-PJAX判断是否PJAX请求，从而返回片段HTML，所以并不需要这一步
+                    // 已后退到首页，真实环境不需要这一步。
                     if (html.indexOf('<html lang="en">') > -1) {
                         container.innerHTML = "";
                         return false;
                     }
 
                     return true;
+                }
+            },
+            events: {
+                ready: function() {
+                    console.log("ready");
+                },
+                begin: function(data) {
+                    console.log("begin：");
+                    console.log(data);
+                },
+                success: function(data) {
+                    console.log("success");
+                    console.log(data);
+                },
+                end: function(data) {
+                    console.log("end");
+                    console.log(data);
+                },
+                error: function(data) {
+                    console.log("error")
+                    console.log(data);
                 }
             }
         });
