@@ -1,6 +1,6 @@
 {
   "name": "coffce-pjax",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple pjax library",
   "main": "scripts/coffce-pjax.js",
   "scripts": {

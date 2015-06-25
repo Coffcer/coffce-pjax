@@ -69,7 +69,7 @@ pjax.init({
         // 自定义更换页面函数，可以在此实现动画效果等
         append: function(html, container) {}
     },
-    // 要监听的事件，相当于CoffcePJAX.on(...)，事件列表看下面
+    // 要监听的事件，相当于pjax.on(...)，事件列表看下面
     events: {}
 });
 ```
@@ -148,19 +148,19 @@ pjax.init({
 ```
 
 ####事件类型
-**ready**
+**ready**<br>
 调用init后，插件准备完成时调用。这个事件比较特殊，必须通过配置监听而不能接口监听。
 
-**begin**
+**begin**<br>
 在请求开始时触发。begin事件有一个object参数： { url, fnb, data }, url表示新页面的url，fnb表示是否由浏览器前进后退触发， data表示传到新页面的数据。
 
-**success**
+**success**<br>
 在请求成功后触发。参数与begin一样。
 
-**end**
+**end**<br>
 在请求结束后触发，无论成功与否。参数与begin一样。
 
-**error**
+**error**<br>
 在请求失败后触发。参数： { url, fnb, data, errCode }，errCode为请求本次http请求的返回码，即xhr.status。
 
 
