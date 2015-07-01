@@ -34,24 +34,20 @@
                 }
             },
             events: {
-                ready: function() {
-                    console.log("ready");
+                init: function() {
+                    console.log("init");
                 },
-                begin: function(data) {
-                    console.log("begin：");
-                    console.log(data);
+                end: function() {
+                    console.log("end");  
                 },
-                success: function(data) {
-                    console.log("success");
-                    console.log(data);
+                ajaxBegin: function() {
+                    console.log("ajaxBegin");
                 },
-                end: function(data) {
-                    console.log("end");
-                    console.log(data);
+                ajaxSuccess: function() {
+                    console.log("ajaxSuccess");
                 },
-                error: function(data) {
-                    console.log("error")
-                    console.log(data);
+                ajaxError: function() {
+                    console.log("ajaxError")
                 }
             }
         });

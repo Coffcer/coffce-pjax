@@ -77,14 +77,14 @@
         },
         /**
          * 输出调试信息，仅在config.debug为true时输出
-         * @param {String} text 
+         * @param {String} text
          */
         log: function (text) {
             config.debug && console.log("coffce-pjax: " + text);
         },
         /**
          * 获取url中的路径， 如：www.google.com/abcd 返回 /abcd
-         * @param {String} url 
+         * @param {String} url
          */
         getPath: function (url) {
             return url.replace(location.protocol + "//" + location.host, "");
@@ -101,8 +101,8 @@
         },
         /**
          * 判断dom是否匹配选择器
-         * @param {Object} element  
-         * @param {String} selector 
+         * @param {Object} element
+         * @param {String} selector
          */
         matchSelector: function (element, selector) {
             var match =
@@ -227,6 +227,8 @@
         fnb: false,
         // 显示新页面
         show: function (title, html) {
+            pjax.trigger("end");
+
             document.title = title;
 
             if (config.custom.append) {
@@ -234,6 +236,8 @@
             } else {
                 config.container.innerHTML = html;
             }
+
+            pjax.trigger("init");
         },
         // 跳转到指定页面
         turn: function (url, data, callback) {
@@ -243,15 +247,15 @@
                 data: data
             };
 
-            pjax.trigger("begin", eventData);
+            //pjax.trigger("begin", eventData);
 
             // 如果是由前进后退触发，并且开启了缓存，则试着从缓存中获取数据
             if (core.fnb && config.cache) {
                 var value = cache.get(url);
                 if (value !== null) {
                     core.show(value.title, value.html);
-                    pjax.trigger("success", eventData);
-                    pjax.trigger("end", eventData);
+                    /*pjax.trigger("success", eventData);
+                    pjax.trigger("end", eventData);*/
                     return;
                 }
             }
@@ -262,6 +266,9 @@
             xhr.open("GET", url, true);
             xhr.setRequestHeader("COFFCE-PJAX", "true");
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+            eventData.xhr = xhr;
+            pjax.trigger("ajaxBegin", eventData);
 
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
@@ -274,6 +281,9 @@
                         if (config.filter.content && !config.filter.content(title, html)) {
                             util.log("filter.content过滤不通过");
                         } else {
+                            callback && callback(data);
+                            pjax.trigger("ajaxSuccess", eventData);
+                            
                             // 显示新页面
                             core.show(title, html);
 
@@ -293,18 +303,13 @@
                                     });
                                 }
                             }
-
-                            callback && callback(data);
-                            pjax.trigger("success", eventData);
                         }
                     } else {
-                        eventData.errCode = xhr.status;
-                        pjax.trigger("error", null, eventData);
+                        pjax.trigger("ajaxError", null, eventData);
                         util.log("请求失败，错误码：" + xhr.status);
                     }
 
                     core.fnb = true;
-                    pjax.trigger("end", eventData);
                 }
             };
             xhr.send();
@@ -329,8 +334,8 @@
             // 将config.container转换为dom
             if (typeof config.container === "string") {
                 var selectorName = config.container;
-                config.container = document.querySelector(config.container);
 
+                config.container = document.querySelector(config.container);
                 if (config.container === null) {
                     throw new Error("找不到Element：" + selectorName);
                 }
@@ -348,11 +353,11 @@
             if (suppost === SUPPORT.HASH && location.hash.length > 2) {
                 // 先删了当前内容，防止用户误会
                 config.container.innerHTML = "";
+                pjax.ready = true;
 
                 core.fnd = false;
                 core.turn(location.href.replace("#/", ""), null, function () {
-                    pjax.ready = true;
-                    pjax.trigger("ready");
+                    pjax.trigger("init");
                 });
             }
 
@@ -360,7 +365,7 @@
 
             if (!pjax.ready) {
                 pjax.ready = true;
-                pjax.trigger("ready");
+                pjax.trigger("init");
             }
         },
         // 注销插件，一般来说你并不需要使用这个方法

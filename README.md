@@ -148,20 +148,20 @@ pjax.init({
 ```
 
 ####事件类型
-**ready**<br>
-调用init后，插件准备完成时调用。这个事件比较特殊，必须通过配置监听而不能接口监听。
-
-**begin**<br>
-在请求开始时触发。begin事件有一个object参数： { url, fnb, data }, url表示新页面的url，fnb表示是否由浏览器前进后退触发， data表示传到新页面的数据。
-
-**success**<br>
-在请求成功后触发。参数与begin一样。
+**init**<br>
+在每个页面加载完成后触发，有一个object参数：{ title, html }
 
 **end**<br>
-在请求结束后触发，无论成功与否。参数与begin一样。
+在每个页面离开前触发
 
-**error**<br>
-在请求失败后触发。参数： { url, fnb, data, errCode }，errCode为请求本次http请求的返回码，即xhr.status。
+**ajaxBegin**<br>
+在请求开始时触发。有一个object参数： { url, fnb, data, xhr }, url表示新页面的url，fnb表示是否由浏览器前进后退触发，data表示传到新页面的数据，xhr是请求的XMLHttpRequest()实例
+
+**ajaxSuccess**<br>
+在请求成功后触发。参数与begin一样。
+
+**ajaxError**<br>
+在请求失败后触发。参数与begin一样。
 
 
 特性
@@ -182,7 +182,7 @@ pjax.init({
 
 注意：
 ------
-作者很懒，没有认真测试过，使用需自己小心。
+作者很懒，没有认真测试过，接口也可能随时变动，使用需自己小心。
 
 License
 -----
